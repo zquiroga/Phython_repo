@@ -1,81 +1,75 @@
-# Objective 1: Import modules os and csv
-
+# import library
 import os
 import csv
 
-# Objective 2: Set the path for the CSV file in PyBankcsv
-
-PyBankcsv = os.path.join("Resources","budget_data.csv")
-
-# Objective 3: Create the lists to store data. 
-
-profit = []
-monthly_changes = []
-date = []
-
-# Initialize the variables as required.
- 
-count = 0
-total_profit = 0
-total_change_profits = 0
-initial_profit = 0
-
-# Open the CSV using the set path PyBankcsv
-
-with open(PyBankcsv, newline="") as csvfile:
-    csvreader = csv.reader(csvfile, delimiter=",")
+# open and read csv
+budget_data = os.path.join("Resources", "budget_data.csv")
+with open(budget_data, newline="") as csvfile:
+    csvreader = csv.reader(csvfile, delimiter=',')
     csv_header = next(csvreader)
+    print(f"Header: {csv_header}")
+    
+    # Create the lists
+    profitLosses = []
+    months = []
+    revenue_change =[]
 
-    # Conducting the ask
-    for row in csvreader:    
-      # Use count to count the number months in this dataset
-      count = count + 1 
+    # read each row of data after header
+    for rows in csvreader:
+        profitLosses.append(int(rows[1]))
+        months.append(rows[0])
 
-      # Will need it when collecting the greatest increase and decrease in profits
-      date.append(row[0])
+  
+    for x in range(1, len(profitLosses)):
+        revenue_change.append((int(profitLosses[x]) - int(profitLosses[x-1])))
 
-      # Append the profit information & calculate the total profit
-      profit.append(row[1])
-      total_profit = total_profit + int(row[1])
+    # calculate average change
+    revenue_average_change = sum(revenue_change) / len(revenue_change)
+    revenue_average = round(revenue_average_change, 2)
 
-      #Calculate the average change in profits from month to month. Then calulate the average change in profits
-      final_profit = int(row[1])
-      monthly_change_profits = final_profit - initial_profit
+    # calculate total  of months
+    total_months = len(months)
 
-      #Store these monthly changes in a list
-      monthly_changes.append(monthly_change_profits)
+    # greatest increase in Profits
+    greatest_increase = max(revenue_change)
 
-      total_change_profits = total_change_profits + monthly_change_profits
-      initial_profit = final_profit
+    #greatest decrease in  Profits
+    greatest_decrease = min(revenue_change)
 
-      #Calculate the average change in profits
-      average_change_profits = (total_change_profits/count)
-      
-      #Find the max and min change in profits and the corresponding dates these changes were obeserved
-      greatest_increase_profits = max(monthly_changes)
-      greatest_decrease_profits = min(monthly_changes)
 
-      increase_date = date[monthly_changes.index(greatest_increase_profits)]
-      decrease_date = date[monthly_changes.index(greatest_decrease_profits)]
-      
-    print("----------------------------------------------------------")
-    print("Financial Analysis")
-    print("----------------------------------------------------------")
-    print("Total Months: " + str(count))
-    print("Total Profits: " + "$" + str(total_profit))
-    print("Average Change: " + "$" + str(int(average_change_profits)))
-    print("Greatest Increase in Profits: " + str(increase_date) + " ($" + str(greatest_increase_profits) + ")")
-    print("Greatest Decrease in Profits: " + str(decrease_date) + " ($" + str(greatest_decrease_profits)+ ")")
-    print("----------------------------------------------------------")
+    # print Results
+    print ("Financial Analysis")
 
-with open('financial_analysis.txt', 'w') as text:
-    text.write("----------------------------------------------------------\n")
-    text.write("  Financial Analysis"+ "\n")
-    text.write("----------------------------------------------------------\n\n")
-    text.write("    Total Months: " + str(count) + "\n")
-    text.write("    Total Profits: " + "$" + str(total_profit) +"\n")
-    text.write("    Average Change: " + '$' + str(int(average_change_profits)) + "\n")
-    text.write("    Greatest Increase in Profits: " + str(increase_date) + " ($" + str(greatest_increase_profits) + ")\n")
-    text.write("    Greatest Decrease in Profits: " + str(decrease_date) + " ($" + str(greatest_decrease_profits) + ")\n")
-    text.write("----------------------------------------------------------\n")
+    print("....................................................................................")
 
+    print ("Total Months:" + str(total_months))
+
+    print("Total:" + "$" + str(sum(profitLosses)))
+
+    print ("Average Change:" + "$" + str(revenue_average))
+
+    print("Greatest Increase in Profits: " + str(months[revenue_change.index(max(revenue_change))+1]) + " " + "($" + str(greatest_increase) + ")")
+
+    print("Greatest Decrease in Profits: " + str(months[revenue_change.index(min(revenue_change))+1]) + " " + "($" + str(greatest_decrease) + ")")
+
+
+    # output to a text file
+    file = open("Financial Report.txt","w")
+
+    file.write("Financial Analysis" + "\n")
+
+    file.write("...................................................................................." + "\n")
+
+    file.write("total months: " + str(total_months) + "\n")
+
+    file.write("Total: " + "$" + str(sum(profitLosses)) + "\n")
+
+    file.write("Average change: " + "$" + str(revenue_average) + "\n")
+
+    file.write("Greatest Increase in Profits: " + str(months[revenue_change.index(max(revenue_change))+1]) + " " + "($" + str(greatest_increase) + ")\n")
+
+    file.write("Greatest Decrease in Profits: " + str(months[revenue_change.index(min(revenue_change))+1]) + " " + "($" + str(greatest_decrease) + ")\n")
+
+    file.close()
+
+    

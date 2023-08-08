@@ -1,70 +1,94 @@
-# Objective 1: Import modules os and csv. Importing numpy in order to use the unique function
+# import poll
 import os
 import csv
 
-# Objective 2: Set the path for the CSV file in PyPollcsv
-
-PyPollcsv = os.path.join("Resources","election_data.csv")
-
-# Objective 3: Create the lists to store data. Initialize
-
-count = 0
-candidatelist = []
-unique_candidate = []
-vote_count = []
-vote_percent = []
-
-# Open the CSV using the set path PyPollcsv
-
-with open(PyPollcsv, newline="") as csvfile:
-    csvreader = csv.reader(csvfile, delimiter=",")
+# open and read csv
+csvpath=os.path.join('Resources','election_data.csv')
+with open(csvpath, newline='') as csvfile:
+    csvreader = csv.reader(csvfile, delimiter=',')
     csv_header = next(csvreader)
-    # Conduct the ask
-    for row in csvreader:
-        # Count the total number of votes
-        count = count + 1
-        # Set the candidate names to candidatelist
-        candidatelist.append(row[2])
-        # Create a set from the candidatelist to get the unique candidate names
-    for x in set(candidatelist):
-        unique_candidate.append(x)
-        # y is the total number of votes per candidate
-        y = candidatelist.count(x)
-        vote_count.append(y)
-        # z is the percent of total votes per candidate
-        z = (y/count)*100
-        vote_percent.append(z)
-        
-    winning_vote_count = max(vote_count)
-    winner = unique_candidate[vote_count.index(winning_vote_count)]
+    print(f"Header: {csv_header}")
     
-# Note to TA: I have tried several ways to get the max of the votecount list and retrieve the name as Winner. But unsucessful. 
-# Hence I am leaving that part out of this code. But Khan is the winner, I know!!!!
-# Jake suggested: votecount = votecount["percentage"].sort_values()
-# Print to terminal
-# Output perhaps needs to be rounded to 3 decimal points. Leaving that formatting out for now) 
- 
-print("-------------------------")
-print("Election Results")   
-print("-------------------------")
-print("Total Votes :" + str(count))    
-print("-------------------------")
-for i in range(len(unique_candidate)):
-            print(unique_candidate[i] + ": " + str(vote_percent[i]) +"% (" + str(vote_count[i])+ ")")
-print("-------------------------")
-print("The winner is: " + winner)
-print("-------------------------")
+  # Create the lists  
+    votes = []
+    county = []
+    candidates = []
+    Charles_Casper_Stockham = []
+    Diana_DeGette = []
+    Raymon_Anthony_Doane = []
+  # Initialize the variables as required.
+    Charles_Casper_Stockham_votes = 0
+    Diana_DeGette_votes = 0
+    Raymon_Anthony_Doane_votes = 0
 
-# Print to a text file: election_results.txt
-# Output perhaps needs to be rounded to 3 decimal points. Leaving that formatting out for now) 
+    # read each row of data after header
+    for row in csvreader:
+        votes.append(int(row[0]))
+        county.append(row[1])
+        candidates.append(row[2])
 
-with open('election_results.txt', 'w') as text:
-    text.write("Election Results\n")
-    text.write("---------------------------------------\n")
-    text.write("Total Vote: " + str(count) + "\n")
-    text.write("---------------------------------------\n")
-    for i in range(len(set(unique_candidate))):
-        text.write(unique_candidate[i] + ": " + str(vote_percent[i]) +"% (" + str(vote_count[i]) + ")\n")
-    text.write("---------------------------------------\n")
-    text.write("The winner is: " + winner + "\n")
-    text.write("---------------------------------------\n"
+    # VOTE COUNT
+    total_votes = (len(votes))
+   
+
+    # Votes per person
+    for candidate in candidates:
+        if candidate == "Charles Casper Stockham":
+            Charles_Casper_Stockham.append(candidates)
+            Charles_Casper_Stockham_votes = len(Charles_Casper_Stockham)
+            
+        elif candidate == "Diana DeGette":
+            Diana_DeGette.append(candidates)
+            Diana_DeGette_votes = len(Diana_DeGette)
+            
+        else:
+            Raymon_Anthony_Doane.append(candidates)
+            Raymon_Anthony_Doane_votes = len(Raymon_Anthony_Doane)
+    
+   
+    
+    
+    # Percentages
+    Charles_Casper_Stockham_percent = round(((Charles_Casper_Stockham_votes / total_votes) * 100), 3)
+    Diana_DeGette_percent = round(((Diana_DeGette_votes / total_votes) * 100), 3)
+    Raymon_Anthony_Doane_percent = round(((Raymon_Anthony_Doane_votes / total_votes) * 100), 3)
+    
+
+    
+    # Winner 
+    if Charles_Casper_Stockham_percent > max(Diana_DeGette_percent, Raymon_Anthony_Doane_percent):
+        winner = "Charles_Casper_Stockham"
+    elif Diana_DeGette_percent > max(Charles_Casper_Stockham_percent, Raymon_Anthony_Doane_percent):
+        winner = "Diana_DeGette"  
+    else:
+        winner = "Raymon_Anthony_Doane"
+
+
+     #  Print the analysis to the terminal 
+    print(f'''Election Results
+-----------------------------------
+Total Votes: {total_votes}
+-----------------------------------
+Charles_Casper_Stockham_percent: {Charles_Casper_Stockham_percent}% ({Charles_Casper_Stockham_votes})
+Diana_DeGette: {Diana_DeGette_percent}% ({Diana_DeGette_votes})
+Raymon_Anthony_Doane: {Raymon_Anthony_Doane_percent}% ({Raymon_Anthony_Doane_votes})
+-----------------------------------
+Winner: {winner}
+-----------------------------------''')
+
+
+    #  Export a text file with the results
+
+    file = open("Results.txt","w")
+    file.write(f'''Election Results
+-----------------------------------
+Total Votes: {total_votes}
+-----------------------------------
+Charles_Casper_Stockham_percent: {Charles_Casper_Stockham_percent}% ({Charles_Casper_Stockham_votes})
+Diana_DeGette: {Diana_DeGette_percent}% ({Diana_DeGette_votes})
+Raymon_Anthony_Doane: {Raymon_Anthony_Doane_percent}% ({Raymon_Anthony_Doane_votes})
+-----------------------------------
+Winner: {winner}
+-----------------------------------''') 
+    file.close()
+    
